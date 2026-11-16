@@ -12,6 +12,12 @@ export const supabase = createClient(
   chave ?? 'chave-nao-configurada',
 )
 
+/** Id de quem está logado (usado para gravar "quem adicionou" em cada registro). */
+export async function meuId(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession()
+  return data.session?.user.id ?? null
+}
+
 /** Executa uma escrita no banco e avisa se der erro. Retorna true se deu certo. */
 export async function exec(
   promessa: PromiseLike<{ error: { message: string } | null }>,

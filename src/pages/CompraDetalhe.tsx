@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useTabela } from '../hooks/useTabela'
-import { exec, supabase } from '../lib/supabase'
+import { exec, meuId, supabase } from '../lib/supabase'
 import { usePerfis } from '../lib/contexto'
 import { arredonda, brl, dataCurta, num } from '../lib/format'
 import { somaCarrinho, somaPlanejado, totalDaCompra, totalLinha } from '../lib/calculos'
@@ -333,6 +333,7 @@ function NovoItem({
   async function adicionar(e: React.FormEvent) {
     e.preventDefault()
     if (!nome.trim()) return
+    const autor = await meuId()
     const ok = await exec(
       supabase.from('itens').insert({
         compra_id: compraId,
@@ -340,6 +341,7 @@ function NovoItem({
         categoria_id: cat || null,
         quantidade: num(qtd) || 1,
         preco: num(preco),
+        adicionado_por: autor,
       }),
     )
     if (ok) {

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTabela } from '../hooks/useTabela'
-import { supabase } from '../lib/supabase'
+import { meuId, supabase } from '../lib/supabase'
 import { brl, dataCurta, hoje, num } from '../lib/format'
 import { somaPlanejado, totalDaCompra } from '../lib/calculos'
 import { NOME_STATUS, type Compra, type Item } from '../lib/types'
@@ -29,9 +29,11 @@ export default function Listas({ onAbrir }: { onAbrir: (id: string) => void }) {
 
   async function criar(e: React.FormEvent) {
     e.preventDefault()
+    const autor = await meuId()
     const { data: nova, error } = await supabase
       .from('compras')
       .insert({
+        criado_por: autor,
         nome: nome.trim() || 'Compra do mercado',
         mercado: mercado.trim() || null,
         orcamento: num(orcamento),
