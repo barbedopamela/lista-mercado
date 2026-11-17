@@ -79,7 +79,7 @@ export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
         >
           ‹
         </button>
-        <span className="font-semibold capitalize text-brand-600">{nomeMes(ym)}</span>
+        <span className="font-semibold text-brand-600">{nomeMes(ym)}</span>
         <button
           className="flex h-10 w-10 items-center justify-center rounded-full text-brand-600"
           onClick={() => setYm(mudarMes(ym, 1))}

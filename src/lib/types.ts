@@ -97,3 +97,44 @@ export type Anexo = {
   enviado_por: string | null
   created_at: string
 }
+
+export type CategoriaFinanca = {
+  id: string
+  nome: string
+  emoji: string | null
+  ordem: number
+}
+
+export type ContaFixa = {
+  id: string
+  nome: string
+  valor: number
+  dia_vencimento: number
+  categoria_id: string | null
+  conta_pessoal_de: string | null // null = conta conjunta
+  primeiro_mes: string // 'YYYY-MM-DD' (dia 1)
+  parcelas: number | null // null = todo mês, sem fim
+  ativa: boolean
+  criado_por: string | null
+  created_at: string
+}
+
+export type ContaMes = {
+  id: string
+  conta_id: string | null // null = conta avulsa
+  mes: string // 'YYYY-MM-01'
+  nome: string
+  valor: number
+  vencimento: string // 'YYYY-MM-DD'
+  categoria_id: string | null
+  conta_pessoal_de: string | null // null = conta conjunta
+  parcela_n: number | null
+  parcela_total: number | null
+  ajustada: boolean
+  pulada: boolean
+  paga: boolean
+  pago_em: string | null
+  pago_por: string | null
+  criado_por: string | null
+  created_at: string
+}

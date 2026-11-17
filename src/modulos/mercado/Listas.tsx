@@ -118,7 +118,7 @@ export default function Listas({ onAbrir }: { onAbrir: (id: string) => void }) {
           <button
             key={a}
             onClick={() => setAba(a)}
-            className={`flex-1 rounded-full py-2 text-sm font-semibold capitalize transition ${
+            className={`flex-1 rounded-full py-2 text-sm font-semibold transition ${
               aba === a ? 'bg-white text-brand-600 shadow-soft' : 'text-brand-500'
             }`}
           >

@@ -2,9 +2,13 @@ import { useState } from 'react'
 import { useTabela } from '../hooks/useTabela'
 import { exec, supabase } from '../lib/supabase'
 import { usePerfis } from '../lib/contexto'
-import type { Categoria, CategoriaResolver, Forma } from '../lib/types'
+import type { Categoria, CategoriaFinanca, CategoriaResolver, Forma } from '../lib/types'
 
-type TabelaEditavel = 'categorias' | 'formas_pagamento' | 'categorias_resolver'
+type TabelaEditavel =
+  | 'categorias'
+  | 'formas_pagamento'
+  | 'categorias_resolver'
+  | 'categorias_financas'
 import Avatar from '../components/Avatar'
 
 export default function Ajustes() {
@@ -15,6 +19,10 @@ export default function Ajustes() {
   })
   const { dados: catsResolver, recarregar: recCatsResolver } = useTabela<CategoriaResolver>(
     'categorias_resolver',
+    { ordem: 'ordem' },
+  )
+  const { dados: catsFinancas, recarregar: recCatsFinancas } = useTabela<CategoriaFinanca>(
+    'categorias_financas',
     { ordem: 'ordem' },
   )
 
@@ -49,6 +57,13 @@ export default function Ajustes() {
         itens={catsResolver}
         comEmoji
         onMudou={() => void recCatsResolver()}
+      />
+      <EditorLista
+        titulo="Categorias de Finanças"
+        tabela="categorias_financas"
+        itens={catsFinancas}
+        comEmoji
+        onMudou={() => void recCatsFinancas()}
       />
       <EditorLista
         titulo="Formas de pagamento"

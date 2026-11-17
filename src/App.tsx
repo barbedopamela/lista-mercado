@@ -7,9 +7,9 @@ import type { Perfil } from './lib/types'
 import BottomNav, { type Aba } from './components/BottomNav'
 import Login from './pages/Login'
 import Configurar from './pages/Configurar'
-import EmBreve from './components/EmBreve'
 import Mercado from './modulos/mercado/Mercado'
 import Resolver from './modulos/resolver/Resolver'
+import Financas from './modulos/financas/Financas'
 import Ajustes from './pages/Ajustes'
 
 export default function App() {
@@ -45,14 +45,7 @@ function Principal({ userId }: { userId: string }) {
       <main className="mx-auto min-h-screen max-w-md px-4 pb-28 pt-5">
         {aba === 'mercado' && <Mercado />}
         {aba === 'resolver' && <Resolver />}
-        {aba === 'financas' && (
-          <EmBreve
-            titulo="Finanças"
-            subtitulo="Contas e saldo da casa"
-            emoji="💰"
-            descricao="Contas do mês, saldo, projeção e caixinhas de projetos."
-          />
-        )}
+        {aba === 'financas' && <Financas />}
         {aba === 'ajustes' && <Ajustes />}
       </main>
       <BottomNav aba={aba} onMudar={setAba} />

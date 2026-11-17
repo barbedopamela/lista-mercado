@@ -28,8 +28,9 @@ export function mudarMes(ym: string, delta: number): string {
 }
 
 export function nomeMes(ym: string): string {
-  const [a, m] = ym.split('-').map(Number)
-  return new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+  const [a = 0, m = 1] = ym.split('-').map(Number)
+  const texto = new Date(a, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+  return texto.charAt(0).toUpperCase() + texto.slice(1) // "Novembro de 2026"
 }
 
 export function dataCurta(data: string): string {
@@ -38,3 +39,6 @@ export function dataCurta(data: string): string {
     month: 'short',
   })
 }
+
+/** Número em texto para campos de digitação ("5.5" vira "5,5"). */
+export const txt = (n: number) => String(n).replace('.', ',')

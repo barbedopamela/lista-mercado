@@ -51,6 +51,7 @@ Cada etapa nova do app traz um arquivo SQL em `supabase/migracoes/`. Rode **uma 
 |---|---|
 | `schema.sql` | base: login, mercado, orçamento, pagamentos |
 | `migracoes/002_a_resolver.sql` | aba A resolver, categorias, anexos e o bucket privado de arquivos |
+| `migracoes/003_contas_fixas.sql` | Finanças: categorias, contas fixas (moldes) e contas de cada mês |
 
 ## Estrutura
 
@@ -58,7 +59,7 @@ Cada etapa nova do app traz um arquivo SQL em `supabase/migracoes/`. Rode **uma 
 supabase/                 schema.sql e migracoes/ (SQL de cada etapa)
 src/modulos/mercado/      módulo Mercado (Compras e Mês)
 src/modulos/resolver/     módulo A resolver
-src/modulos/financas/     módulo Finanças (próxima etapa)
+src/modulos/financas/     módulo Finanças (contas do mês; saldo, projeção e caixinhas vêm depois)
 src/components/           peças compartilhadas (Anexos, Avatar, Barra…)
 src/lib/                  tipos, formatação e regras de cálculo
 src/hooks/useTabela.ts    carrega uma tabela e escuta mudanças em tempo real
@@ -66,6 +67,12 @@ src/pages/                Login, Ajustes e telas gerais
 ```
 
 Para criar um módulo novo: uma pasta em `src/modulos/`, uma aba em `BottomNav.tsx` e o SQL em `supabase/migracoes/`.
+
+## Testes
+
+```bash
+npm test    # testa as regras das contas fixas (parcelas, vencimento, sincronização)
+```
 
 ## Próximos passos (versão 2)
 - Histórico de preços: preencher o preço unitário com o último valor pago.
