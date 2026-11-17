@@ -2,16 +2,21 @@ import { useState } from 'react'
 import MesContas from './MesContas'
 import ContaMesDetalhe from './ContaMesDetalhe'
 import ContasFixas from './ContasFixas'
+import Saldo, { type Alvo } from './Saldo'
+import LancamentoDetalhe from './LancamentoDetalhe'
 
-type Sub = 'mes' | 'contas'
+type Sub = 'mes' | 'saldo' | 'contas'
 
-/** Módulo Finanças da casa. Saldo, projeção e caixinhas entram nas próximas entregas. */
+/** Módulo Finanças da casa. Projeção e caixinhas entram nas próximas entregas. */
 export default function Financas() {
   const [sub, setSub] = useState<Sub>('mes')
-  const [contaAberta, setContaAberta] = useState<string | null>(null)
+  const [aberto, setAberto] = useState<Alvo | null>(null)
 
-  if (contaAberta) {
-    return <ContaMesDetalhe id={contaAberta} onVoltar={() => setContaAberta(null)} />
+  if (aberto?.kind === 'conta') {
+    return <ContaMesDetalhe id={aberto.id} onVoltar={() => setAberto(null)} />
+  }
+  if (aberto?.kind === 'lancamento') {
+    return <LancamentoDetalhe id={aberto.id} onVoltar={() => setAberto(null)} />
   }
 
   return (
@@ -20,6 +25,7 @@ export default function Financas() {
         {(
           [
             ['mes', 'Mês'],
+            ['saldo', 'Saldo'],
             ['contas', 'Contas'],
           ] as [Sub, string][]
         ).map(([chave, nome]) => (
@@ -34,7 +40,9 @@ export default function Financas() {
           </button>
         ))}
       </div>
-      {sub === 'mes' ? <MesContas onAbrir={setContaAberta} /> : <ContasFixas />}
+      {sub === 'mes' && <MesContas onAbrir={(id) => setAberto({ kind: 'conta', id })} />}
+      {sub === 'saldo' && <Saldo onAbrir={setAberto} />}
+      {sub === 'contas' && <ContasFixas />}
     </div>
   )
 }

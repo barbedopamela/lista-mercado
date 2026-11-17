@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "node --experimental-strip-types --no-warnings --test src/modulos/financas/contas.test.ts"
+    "test": "node --experimental-strip-types --no-warnings --test src/modulos/financas/contas.test.ts src/modulos/financas/saldo.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

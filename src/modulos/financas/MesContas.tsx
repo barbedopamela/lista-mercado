@@ -167,7 +167,7 @@ export default function MesContas({ onAbrir }: { onAbrir: (id: string) => void }
             <label className="label">Categoria</label>
             <select className="input px-3" value={cat} onChange={(e) => setCat(e.target.value)}>
               <option value="">—</option>
-              {cats.map((c) => (
+              {cats.filter((c) => (c.tipo ?? 'saida') === 'saida').map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.emoji} {c.nome}
                 </option>

@@ -164,7 +164,7 @@ export default function ContaMesDetalhe({ id, onVoltar }: { id: string; onVoltar
           <label className="label">Categoria</label>
           <select className="input px-3" value={cat} onChange={(e) => setCat(e.target.value)}>
             <option value="">—</option>
-            {cats.map((k) => (
+            {cats.filter((k) => (k.tipo ?? 'saida') === 'saida').map((k) => (
               <option key={k.id} value={k.id}>
                 {k.emoji} {k.nome}
               </option>

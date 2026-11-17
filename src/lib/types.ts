@@ -103,6 +103,27 @@ export type CategoriaFinanca = {
   nome: string
   emoji: string | null
   ordem: number
+  tipo: 'entrada' | 'saida'
+}
+
+export type Lancamento = {
+  id: string
+  tipo: 'entrada' | 'saida'
+  valor: number
+  data: string
+  descricao: string
+  categoria_id: string | null
+  conta_pessoal_de: string | null
+  criado_por: string | null
+  created_at: string
+}
+
+export type SaldoConjunta = {
+  id: number
+  valor: number
+  data: string
+  atualizado_por: string | null
+  updated_at: string
 }
 
 export type ContaFixa = {

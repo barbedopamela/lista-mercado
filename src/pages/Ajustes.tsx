@@ -59,10 +59,19 @@ export default function Ajustes() {
         onMudou={() => void recCatsResolver()}
       />
       <EditorLista
-        titulo="Categorias de Finanças"
+        titulo="Categorias de saída (Finanças)"
         tabela="categorias_financas"
-        itens={catsFinancas}
+        itens={catsFinancas.filter((c) => (c.tipo ?? 'saida') === 'saida')}
         comEmoji
+        extra={{ tipo: 'saida' }}
+        onMudou={() => void recCatsFinancas()}
+      />
+      <EditorLista
+        titulo="Categorias de entrada (Finanças)"
+        tabela="categorias_financas"
+        itens={catsFinancas.filter((c) => c.tipo === 'entrada')}
+        comEmoji
+        extra={{ tipo: 'entrada' }}
         onMudou={() => void recCatsFinancas()}
       />
       <EditorLista
@@ -82,12 +91,14 @@ function EditorLista({
   tabela,
   itens,
   comEmoji,
+  extra,
   onMudou,
 }: {
   titulo: string
   tabela: TabelaEditavel
   itens: ItemLista[]
   comEmoji?: boolean
+  extra?: Record<string, unknown>
   onMudou: () => void
 }) {
   const [nome, setNome] = useState('')
@@ -97,7 +108,7 @@ function EditorLista({
     e.preventDefault()
     if (!nome.trim()) return
     const proxima = Math.max(0, ...itens.map((i) => i.ordem)) + 1
-    const dados: Record<string, unknown> = { nome: nome.trim(), ordem: proxima }
+    const dados: Record<string, unknown> = { nome: nome.trim(), ordem: proxima, ...extra }
     if (comEmoji) dados.emoji = emoji.trim() || '🛒'
     if (await exec(supabase.from(tabela).insert(dados))) {
       setNome('')
