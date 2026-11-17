@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState } from 'react'
-import { useTabela } from '../hooks/useTabela'
-import { exec, meuId, supabase } from '../lib/supabase'
-import { usePerfis } from '../lib/contexto'
-import { arredonda, brl, dataCurta, num } from '../lib/format'
-import { somaCarrinho, somaPlanejado, totalDaCompra, totalLinha } from '../lib/calculos'
+import { useTabela } from '../../hooks/useTabela'
+import { exec, meuId, supabase } from '../../lib/supabase'
+import { usePerfis } from '../../lib/contexto'
+import { arredonda, brl, dataCurta, num } from '../../lib/format'
+import { somaCarrinho, somaPlanejado, totalDaCompra, totalLinha } from '../../lib/calculos'
 import {
   NOME_STATUS,
   type Categoria,
@@ -13,9 +13,9 @@ import {
   type Pagamento,
   type Perfil,
   type Status,
-} from '../lib/types'
-import Avatar from '../components/Avatar'
-import Barra from '../components/Barra'
+} from '../../lib/types'
+import Avatar from '../../components/Avatar'
+import Barra from '../../components/Barra'
 
 const txt = (n: number) => String(n).replace('.', ',')
 

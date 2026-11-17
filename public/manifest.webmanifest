@@ -1,7 +1,7 @@
 {
-  "name": "Lista do Mercado",
-  "short_name": "Mercado",
-  "description": "Listas, orçamento e pagamentos das compras de mercado.",
+  "name": "Nossa Casa",
+  "short_name": "Casa",
+  "description": "Mercado, pendências e finanças da casa.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

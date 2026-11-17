@@ -15,19 +15,16 @@
   <rect width="1024" height="1024" rx="228" fill="url(#fundo)"/>
   <rect width="1024" height="1024" rx="228" fill="url(#brilho)"/>
   <g filter="url(#sombra)" stroke-linecap="round" stroke-linejoin="round">
-    <!-- cesto de arame -->
-    <path d="M318 330 H862 L792 598 H400 Z" fill="#ffffff" fill-opacity="0.16" stroke="#ffffff" stroke-width="40"/>
-    <g stroke="#ffffff" stroke-width="24" stroke-opacity="0.85" fill="none">
-      <path d="M452 330 L496 598"/>
-      <path d="M590 330 L596 598"/>
-      <path d="M728 330 L696 598"/>
-      <path d="M348 420 H838"/>
-      <path d="M372 510 H816"/>
-    </g>
-    <!-- cabo e base -->
-    <path d="M176 236 H300 L396 660 H800" fill="none" stroke="#DDF2F3" stroke-width="46"/>
-    <!-- rodinhas -->
-    <circle cx="476" cy="764" r="52" fill="#DDF2F3"/>
-    <circle cx="724" cy="764" r="52" fill="#DDF2F3"/>
+    <!-- corpo da casa -->
+    <path d="M272 492 V760 Q272 800 312 800 H712 Q752 800 752 760 V492" fill="#ffffff"/>
+    <!-- telhado -->
+    <path d="M196 540 L512 244 L828 540" fill="none" stroke="#DDF2F3" stroke-width="64"/>
+    <!-- chaminé -->
+    <path d="M668 330 V252 H736 V392" fill="none" stroke="#DDF2F3" stroke-width="44"/>
   </g>
+  <!-- porta -->
+  <path d="M448 800 V624 Q448 584 488 584 H536 Q576 584 576 624 V800 Z" fill="#14A3A8"/>
+  <!-- janelas -->
+  <rect x="316" y="548" width="76" height="76" rx="16" fill="#14A3A8" fill-opacity="0.85"/>
+  <rect x="632" y="548" width="76" height="76" rx="16" fill="#14A3A8" fill-opacity="0.85"/>
 </svg>

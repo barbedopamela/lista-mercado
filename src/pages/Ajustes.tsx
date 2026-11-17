@@ -31,7 +31,7 @@ export default function Ajustes() {
       </section>
 
       <EditorLista
-        titulo="Categorias"
+        titulo="Categorias do mercado"
         tabela="categorias"
         itens={cats}
         comEmoji

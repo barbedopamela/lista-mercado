@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
-import { useTabela } from '../hooks/useTabela'
-import { exec, supabase } from '../lib/supabase'
-import { arredonda, brl, dataCurta, mesAtual, mudarMes, nomeMes, num } from '../lib/format'
-import { somaPlanejado, totalDaCompra } from '../lib/calculos'
-import type { Compra, Forma, Item, OrcamentoMes, Pagamento } from '../lib/types'
-import Barra from '../components/Barra'
+import { useTabela } from '../../hooks/useTabela'
+import { exec, supabase } from '../../lib/supabase'
+import { arredonda, brl, dataCurta, mesAtual, mudarMes, nomeMes, num } from '../../lib/format'
+import { somaPlanejado, totalDaCompra } from '../../lib/calculos'
+import type { Compra, Forma, Item, OrcamentoMes, Pagamento } from '../../lib/types'
+import Barra from '../../components/Barra'
 
 export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
   const { dados: compras } = useTabela<Compra>('compras', { ordem: 'data', asc: false })

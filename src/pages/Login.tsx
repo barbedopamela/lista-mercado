@@ -30,11 +30,11 @@ export default function Login() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-brand-600 to-teal-500">
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center text-white">
         <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-xl3 bg-white/15 text-4xl backdrop-blur">
-          🛒
+          🏡
         </div>
-        <h1 className="text-3xl font-bold">Lista do Mercado</h1>
+        <h1 className="text-3xl font-bold">Nossa Casa</h1>
         <p className="mt-2 max-w-xs text-white/80">
-          Listas, orçamento e pagamentos das compras de vocês dois, no mesmo lugar.
+          Mercado, pendências e finanças da casa de vocês dois, no mesmo lugar.
         </p>
       </div>
 

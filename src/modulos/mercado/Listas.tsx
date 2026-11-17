@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
-import { useTabela } from '../hooks/useTabela'
-import { meuId, supabase } from '../lib/supabase'
-import { brl, dataCurta, hoje, num } from '../lib/format'
-import { somaPlanejado, totalDaCompra } from '../lib/calculos'
-import { NOME_STATUS, type Compra, type Item } from '../lib/types'
-import Barra from '../components/Barra'
+import { useTabela } from '../../hooks/useTabela'
+import { meuId, supabase } from '../../lib/supabase'
+import { brl, dataCurta, hoje, num } from '../../lib/format'
+import { somaPlanejado, totalDaCompra } from '../../lib/calculos'
+import { NOME_STATUS, type Compra, type Item } from '../../lib/types'
+import Barra from '../../components/Barra'
 
 export default function Listas({ onAbrir }: { onAbrir: (id: string) => void }) {
   const { dados: compras, recarregar } = useTabela<Compra>('compras', { ordem: 'data', asc: false })

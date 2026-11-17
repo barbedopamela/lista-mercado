@@ -7,9 +7,8 @@ import type { Perfil } from './lib/types'
 import BottomNav, { type Aba } from './components/BottomNav'
 import Login from './pages/Login'
 import Configurar from './pages/Configurar'
-import Listas from './pages/Listas'
-import CompraDetalhe from './pages/CompraDetalhe'
-import Mes from './pages/Mes'
+import EmBreve from './components/EmBreve'
+import Mercado from './modulos/mercado/Mercado'
 import Ajustes from './pages/Ajustes'
 
 export default function App() {
@@ -32,8 +31,7 @@ export default function App() {
 }
 
 function Principal({ userId }: { userId: string }) {
-  const [aba, setAba] = useState<Aba>('listas')
-  const [compraAberta, setCompraAberta] = useState<string | null>(null)
+  const [aba, setAba] = useState<Aba>('mercado')
 
   const { dados: perfis } = useTabela<Perfil>('perfis')
   const valor = useMemo(
@@ -41,29 +39,29 @@ function Principal({ userId }: { userId: string }) {
     [perfis, userId],
   )
 
-  function mudarAba(a: Aba) {
-    setAba(a)
-    setCompraAberta(null)
-  }
-
-  function abrirCompra(id: string) {
-    setAba('listas')
-    setCompraAberta(id)
-  }
-
   return (
     <PerfisCtx.Provider value={valor}>
       <main className="mx-auto min-h-screen max-w-md px-4 pb-28 pt-5">
-        {aba === 'listas' &&
-          (compraAberta ? (
-            <CompraDetalhe id={compraAberta} onVoltar={() => setCompraAberta(null)} />
-          ) : (
-            <Listas onAbrir={abrirCompra} />
-          ))}
-        {aba === 'mes' && <Mes onAbrir={abrirCompra} />}
+        {aba === 'mercado' && <Mercado />}
+        {aba === 'resolver' && (
+          <EmBreve
+            titulo="A resolver"
+            subtitulo="Pendências da casa"
+            emoji="✅"
+            descricao="Lista de coisas para resolver, com responsável, prazo e anexos."
+          />
+        )}
+        {aba === 'financas' && (
+          <EmBreve
+            titulo="Finanças"
+            subtitulo="Contas e saldo da casa"
+            emoji="💰"
+            descricao="Contas do mês, saldo, projeção e caixinhas de projetos."
+          />
+        )}
         {aba === 'ajustes' && <Ajustes />}
       </main>
-      <BottomNav aba={aba} onMudar={mudarAba} />
+      <BottomNav aba={aba} onMudar={setAba} />
     </PerfisCtx.Provider>
   )
 }
