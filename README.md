@@ -1,6 +1,6 @@
-# 🛒 Lista do Mercado
+# 🏡 Nossa Casa
 
-App de listas de mercado para duas pessoas: itens com total somando sozinho, orçamento por compra e por mês, modo "no mercado" (planejado × no carrinho), pagamento dividido em várias formas e foto/nome de quem adicionou cada item. Atualiza em tempo real entre os dois celulares.
+App da casa para duas pessoas, em módulos (abas): **Mercado**, **A resolver** e **Finanças** (em construção). O módulo Mercado tem listas de mercado: itens com total somando sozinho, orçamento por compra e por mês, modo "no mercado" (planejado × no carrinho), pagamento dividido em várias formas e foto/nome de quem adicionou cada item. Atualiza em tempo real entre os dois celulares.
 
 **Stack:** React + TypeScript + Tailwind (mesma base do Lovable) · Supabase (login Google, banco PostgreSQL e tempo real).
 
@@ -43,14 +43,29 @@ npm run dev
 ### 6. Publicar (grátis)
 Importe este repositório na [Vercel](https://vercel.com) (ou Netlify), adicione as duas variáveis `VITE_SUPABASE_*` em *Environment Variables* e faça o deploy. No iPhone/Android, abra o link e use **Adicionar à tela inicial**.
 
+## Atualizações do banco (migrações)
+
+Cada etapa nova do app traz um arquivo SQL em `supabase/migracoes/`. Rode **uma vez** no SQL Editor do Supabase, na ordem:
+
+| Arquivo | O que adiciona |
+|---|---|
+| `schema.sql` | base: login, mercado, orçamento, pagamentos |
+| `migracoes/002_a_resolver.sql` | aba A resolver, categorias, anexos e o bucket privado de arquivos |
+
 ## Estrutura
 
 ```
-supabase/schema.sql      tabelas, regras de acesso e tempo real
-src/lib/calculos.ts      regras de cálculo (totais, orçamento)
-src/hooks/useTabela.ts   carrega uma tabela e escuta mudanças em tempo real
-src/pages/               Listas, CompraDetalhe, Mes, Ajustes, Login
+supabase/                 schema.sql e migracoes/ (SQL de cada etapa)
+src/modulos/mercado/      módulo Mercado (Compras e Mês)
+src/modulos/resolver/     módulo A resolver
+src/modulos/financas/     módulo Finanças (próxima etapa)
+src/components/           peças compartilhadas (Anexos, Avatar, Barra…)
+src/lib/                  tipos, formatação e regras de cálculo
+src/hooks/useTabela.ts    carrega uma tabela e escuta mudanças em tempo real
+src/pages/                Login, Ajustes e telas gerais
 ```
+
+Para criar um módulo novo: uma pasta em `src/modulos/`, uma aba em `BottomNav.tsx` e o SQL em `supabase/migracoes/`.
 
 ## Próximos passos (versão 2)
 - Histórico de preços: preencher o preço unitário com o último valor pago.

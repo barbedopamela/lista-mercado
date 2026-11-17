@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useTabela } from '../hooks/useTabela'
 import { exec, supabase } from '../lib/supabase'
 import { usePerfis } from '../lib/contexto'
-import type { Categoria, Forma } from '../lib/types'
+import type { Categoria, CategoriaResolver, Forma } from '../lib/types'
+
+type TabelaEditavel = 'categorias' | 'formas_pagamento' | 'categorias_resolver'
 import Avatar from '../components/Avatar'
 
 export default function Ajustes() {
@@ -11,6 +13,10 @@ export default function Ajustes() {
   const { dados: formas, recarregar: recFormas } = useTabela<Forma>('formas_pagamento', {
     ordem: 'ordem',
   })
+  const { dados: catsResolver, recarregar: recCatsResolver } = useTabela<CategoriaResolver>(
+    'categorias_resolver',
+    { ordem: 'ordem' },
+  )
 
   return (
     <div className="space-y-5">
@@ -38,6 +44,13 @@ export default function Ajustes() {
         onMudou={() => void recCats()}
       />
       <EditorLista
+        titulo="Categorias de “A resolver”"
+        tabela="categorias_resolver"
+        itens={catsResolver}
+        comEmoji
+        onMudou={() => void recCatsResolver()}
+      />
+      <EditorLista
         titulo="Formas de pagamento"
         tabela="formas_pagamento"
         itens={formas}
@@ -57,7 +70,7 @@ function EditorLista({
   onMudou,
 }: {
   titulo: string
-  tabela: 'categorias' | 'formas_pagamento'
+  tabela: TabelaEditavel
   itens: ItemLista[]
   comEmoji?: boolean
   onMudou: () => void
@@ -117,7 +130,7 @@ function LinhaEditavel({
   onMudou,
 }: {
   item: ItemLista
-  tabela: 'categorias' | 'formas_pagamento'
+  tabela: TabelaEditavel
   comEmoji?: boolean
   onMudou: () => void
 }) {

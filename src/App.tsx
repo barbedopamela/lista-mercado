@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Configurar from './pages/Configurar'
 import EmBreve from './components/EmBreve'
 import Mercado from './modulos/mercado/Mercado'
+import Resolver from './modulos/resolver/Resolver'
 import Ajustes from './pages/Ajustes'
 
 export default function App() {
@@ -43,14 +44,7 @@ function Principal({ userId }: { userId: string }) {
     <PerfisCtx.Provider value={valor}>
       <main className="mx-auto min-h-screen max-w-md px-4 pb-28 pt-5">
         {aba === 'mercado' && <Mercado />}
-        {aba === 'resolver' && (
-          <EmBreve
-            titulo="A resolver"
-            subtitulo="Pendências da casa"
-            emoji="✅"
-            descricao="Lista de coisas para resolver, com responsável, prazo e anexos."
-          />
-        )}
+        {aba === 'resolver' && <Resolver />}
         {aba === 'financas' && (
           <EmBreve
             titulo="Finanças"
