@@ -3,7 +3,8 @@ import { useTabela } from '../../hooks/useTabela'
 import { exec, supabase } from '../../lib/supabase'
 import { arredonda, brl, dataCurta, mesAtual, mudarMes, nomeMes, num } from '../../lib/format'
 import { somaPlanejado, totalDaCompra } from '../../lib/calculos'
-import type { Compra, Forma, Item, OrcamentoMes, Pagamento } from '../../lib/types'
+import type { Compra, Forma, Item, OrcamentoForma, OrcamentoMes, Pagamento } from '../../lib/types'
+import { linhasPorForma, somaOrcamentos } from '../../lib/orcamento'
 import Barra from '../../components/Barra'
 
 export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
@@ -12,12 +13,24 @@ export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
   const { dados: pags } = useTabela<Pagamento>('pagamentos')
   const { dados: formas } = useTabela<Forma>('formas_pagamento', { ordem: 'ordem' })
   const { dados: orcamentos, recarregar } = useTabela<OrcamentoMes>('orcamento_mensal')
+  const { dados: orcFormas, recarregar: recarregarFormas } = useTabela<OrcamentoForma>('orcamento_formas')
 
   const [ym, setYm] = useState(mesAtual())
   const [editando, setEditando] = useState(false)
   const [valor, setValor] = useState('')
+  const [valoresForma, setValoresForma] = useState<Record<string, string>>({})
 
-  const orcamento = orcamentos.find((o) => o.mes === `${ym}-01`)?.valor ?? 0
+  // orçamento de cada forma neste mês
+  const orcPorForma = useMemo(() => {
+    const m = new Map<string, number>()
+    for (const o of orcFormas) if (o.mes === `${ym}-01` && Number(o.valor) > 0) m.set(o.forma_id, Number(o.valor))
+    return m
+  }, [orcFormas, ym])
+  const dividido = orcPorForma.size > 0
+  // com formas definidas, o total do mês é a soma delas; senão vale o valor único antigo
+  const orcamento = dividido
+    ? somaOrcamentos(orcPorForma)
+    : (orcamentos.find((o) => o.mes === `${ym}-01`)?.valor ?? 0)
 
   const resumo = useMemo(() => {
     const doMes = compras.filter((c) => c.data.startsWith(ym))
@@ -48,21 +61,49 @@ export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
 
   async function salvarOrcamento(e: React.FormEvent) {
     e.preventDefault()
+    const mes = `${ym}-01`
+    let total = num(valor)
+    if (formas.length > 0) {
+      const preenchidas = formas.filter((f) => num(valoresForma[f.id] ?? '') > 0)
+      const vazias = formas.filter((f) => num(valoresForma[f.id] ?? '') <= 0).map((f) => f.id)
+      total = preenchidas.reduce((s, f) => s + num(valoresForma[f.id] ?? ''), 0)
+      if (preenchidas.length > 0) {
+        const ok = await exec(
+          supabase.from('orcamento_formas').upsert(
+            preenchidas.map((f) => ({ mes, forma_id: f.id, valor: num(valoresForma[f.id] ?? '') })),
+            { onConflict: 'mes,forma_id' },
+          ),
+        )
+        if (!ok) return
+      }
+      if (vazias.length > 0) {
+        const ok = await exec(supabase.from('orcamento_formas').delete().eq('mes', mes).in('forma_id', vazias))
+        if (!ok) return
+      }
+    }
     const ok = await exec(
-      supabase
-        .from('orcamento_mensal')
-        .upsert({ mes: `${ym}-01`, valor: num(valor) }, { onConflict: 'mes' }),
+      supabase.from('orcamento_mensal').upsert({ mes, valor: arredonda(total) }, { onConflict: 'mes' }),
     )
     if (ok) {
       setEditando(false)
       void recarregar()
+      void recarregarFormas()
     }
   }
 
+  function abrirEdicao() {
+    setValor(orcamento ? String(orcamento).replace('.', ',') : '')
+    const v: Record<string, string> = {}
+    for (const [id, n] of orcPorForma) v[id] = String(n).replace('.', ',')
+    setValoresForma(v)
+    setEditando((x) => !x)
+  }
+
+  const totalEditado = arredonda(formas.reduce((s, f) => s + num(valoresForma[f.id] ?? ''), 0))
+
   const restante = arredonda(orcamento - resumo.gasto)
   const totalPago = [...resumo.porForma.values()].reduce((s, v) => s + v, 0)
-  const nomeForma = (fid: string) =>
-    fid === 'outra' ? 'Outra forma' : (formas.find((f) => f.id === fid)?.nome ?? 'Outra forma')
+  const linhas = linhasPorForma(formas, orcPorForma, resumo.porForma)
 
   return (
     <div className="space-y-5">
@@ -99,26 +140,50 @@ export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
           </div>
           <button
             className="btn-ghost px-3 py-2"
-            onClick={() => {
-              setValor(orcamento ? String(orcamento).replace('.', ',') : '')
-              setEditando((v) => !v)
-            }}
+            onClick={abrirEdicao}
           >
             {editando ? 'Cancelar' : orcamento ? 'Editar orçamento' : 'Definir orçamento'}
           </button>
         </div>
 
         {editando && (
-          <form onSubmit={salvarOrcamento} className="flex gap-2">
-            <input
-              className="input"
-              inputMode="decimal"
-              placeholder="Orçamento do mês (R$)"
-              value={valor}
-              onChange={(e) => setValor(e.target.value)}
-              autoFocus
-            />
-            <button type="submit" className="btn-primary">
+          <form onSubmit={salvarOrcamento} className="space-y-3">
+            {formas.length > 0 ? (
+              <>
+                <p className="text-xs text-brand-500">
+                  Quanto você quer gastar com cada forma de pagamento neste mês. Deixe em branco as que
+                  não vai usar.
+                </p>
+                {formas.map((f) => (
+                  <div key={f.id} className="flex items-center gap-3">
+                    <label className="w-28 shrink-0 text-sm font-semibold text-brand-600" htmlFor={`orc-${f.id}`}>
+                      {f.nome}
+                    </label>
+                    <input
+                      id={`orc-${f.id}`}
+                      className="input px-3"
+                      inputMode="decimal"
+                      placeholder="0,00"
+                      value={valoresForma[f.id] ?? ''}
+                      onChange={(e) => setValoresForma({ ...valoresForma, [f.id]: e.target.value })}
+                    />
+                  </div>
+                ))}
+                <p className="text-sm text-brand-500">
+                  Total do mês: <strong>{brl(totalEditado)}</strong>
+                </p>
+              </>
+            ) : (
+              <input
+                className="input"
+                inputMode="decimal"
+                placeholder="Orçamento do mês (R$)"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                autoFocus
+              />
+            )}
+            <button type="submit" className="btn-primary w-full">
               Salvar
             </button>
           </form>
@@ -147,23 +212,29 @@ export default function Mes({ onAbrir }: { onAbrir: (id: string) => void }) {
 
       <section className="card space-y-3 p-4">
         <h2 className="text-lg font-semibold text-brand-600">Como foi pago</h2>
-        {resumo.porForma.size === 0 ? (
+        {linhas.length === 0 ? (
           <p className="text-sm text-brand-500">
-            Nenhum pagamento lançado em compras finalizadas neste mês.
+            Defina o orçamento de cada forma e lance pagamentos em compras finalizadas para acompanhar aqui.
           </p>
         ) : (
-          <ul className="space-y-3">
-            {[...resumo.porForma.entries()]
-              .sort((a, b) => b[1] - a[1])
-              .map(([fid, v]) => (
-                <li key={fid}>
-                  <div className="mb-1 flex justify-between text-sm">
-                    <span>{nomeForma(fid)}</span>
-                    <strong>{brl(v)}</strong>
-                  </div>
-                  <Barra valor={v} limite={totalPago} />
-                </li>
-              ))}
+          <ul className="space-y-4">
+            {linhas.map((l) => (
+              <li key={l.id} className="space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="font-semibold">{l.nome}</span>
+                  <span>
+                    <strong>{brl(l.gasto)}</strong>
+                    {l.orcamento > 0 && <span className="text-brand-500"> de {brl(l.orcamento)}</span>}
+                  </span>
+                </div>
+                <Barra valor={l.gasto} limite={l.orcamento > 0 ? l.orcamento : totalPago} />
+                {l.orcamento > 0 && (
+                  <p className={`text-xs ${l.restante < 0 ? 'font-semibold text-rose-600' : 'text-brand-500'}`}>
+                    {l.restante >= 0 ? `Restam ${brl(l.restante)}` : `Passou ${brl(-l.restante)}`}
+                  </p>
+                )}
+              </li>
+            ))}
           </ul>
         )}
       </section>

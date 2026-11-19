@@ -53,6 +53,7 @@ Cada etapa nova do app traz um arquivo SQL em `supabase/migracoes/`. Rode **uma 
 | `migracoes/002_a_resolver.sql` | aba A resolver, categorias, anexos e o bucket privado de arquivos |
 | `migracoes/003_contas_fixas.sql` | Finanças: categorias, contas fixas (moldes) e contas de cada mês |
 | `migracoes/004_saldo_lancamentos.sql` | Finanças: categorias de entrada, lançamentos avulsos e saldo da conta conjunta |
+| `migracoes/005_orcamento_por_forma.sql` | Mercado: orçamento do mês dividido por forma de pagamento (Cartão, VR…) |
 
 ## Estrutura
 

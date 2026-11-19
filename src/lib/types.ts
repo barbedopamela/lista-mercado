@@ -56,6 +56,12 @@ export type OrcamentoMes = {
   valor: number
 }
 
+export type OrcamentoForma = {
+  mes: string // 'YYYY-MM-01'
+  forma_id: string
+  valor: number
+}
+
 export const NOME_STATUS: Record<Status, string> = {
   planejando: 'Planejando',
   no_mercado: 'No mercado',
